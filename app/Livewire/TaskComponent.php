@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class TaskComponent extends Component
@@ -35,9 +36,9 @@ class TaskComponent extends Component
 
     public function getTask()
     {
-        $tasks = Auth::user()->tasks;
-        $shared = Auth::user()->sharedTasks()->get();
-        $this->tasks = $shared->merge($tasks);
+        // $tasks = Auth::user()->tasks;
+        $this->tasks = Auth::user()->sharedTasks()->get();
+        // $this->tasks = $shared->merge($tasks);
     }
 
     public function clearFields()
@@ -77,13 +78,11 @@ class TaskComponent extends Component
                 ]
             );
         } else {
-            Task::Create(
-                [
-                    'user_id' => Auth::id(),
-                    'title' => $this->title,
-                    'description' => $this->description
-                ]
-            );
+            $task = new Task();
+            $task->title = $this->title;
+            $task->description = $this->description;
+            $task->save(); 
+            Auth::user()->sharedTasks()->attach($task->id, ['permission' => 'owner']);
         }
         $this->clearFields();
         $this->closeCreateModal();
@@ -113,8 +112,26 @@ class TaskComponent extends Component
     {
         $user = User::find($this->user_id);
         $user->sharedTasks()->attach($this->editingTask->id, ['permission' => $this->permission]);
+        $task = Task::find($this->editingTask->id);
+        $task->update(
+            [
+                'shared' => 1
+            ]
+        );
         $this->clearFields();
         $this->closeShareModal();
+        $this->getTask();
+    }
+
+    public function unShareTask(Task $task)
+    {
+        DB::delete('delete from task_user where task_id = ? and user_id != ?', [$task->id, auth()->user()->id]);
+        $task = Task::find($task->id);
+        $task->update(
+            [
+                'shared' => 0
+            ]
+        );
         $this->getTask();
     }
 }

@@ -15,18 +15,9 @@ class Task extends Model
     protected $fillable = [
         'title',
         'description',
-        'user_id'
+        'shared'
     ];
 
-    /**
-     * Get the user that owns the Task
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     /**
      * The user that belong to the Task

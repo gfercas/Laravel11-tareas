@@ -21,7 +21,7 @@
                                 <td class="py-4 px-6">{{ $task->title }}</td>
                                 <td class="py-4 px-6">{{ $task->description }}</td>
                                 <td class="py-4 px-6">
-                                    @if ((isset($task->pivot) && $task->pivot->permission == 'edit') || auth()->user()->id == $task->user_id)
+                                    @if (isset($task->pivot) && ($task->pivot->permission == 'owner' || $task->pivot->permission == 'edit'))
                                         <button wire:click="openCreateModal({{ $task }})"
                                             class="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-md">
                                             Editar
@@ -30,6 +30,12 @@
                                             class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-md">
                                             Compartir
                                         </button>
+                                        @if ($task->shared && isset($task->pivot) && $task->pivot->permission == 'owner')
+                                            <button wire:click="unShareTask({{ $task }})"
+                                                class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md">
+                                                Descompartir
+                                            </button>
+                                        @endif
                                         <button
                                             wire:click="deleteTask({{ $task }})"class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-md"
                                             wire:confirm="¿Deseas borrar la tarea?">
@@ -46,6 +52,7 @@
         </div>
 
     </div>
+
 
     <!-- component MODAL -->
     @if ($modal)

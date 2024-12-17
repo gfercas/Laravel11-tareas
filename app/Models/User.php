@@ -50,16 +50,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all of the comments for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function tasks(): HasMany
-    {
-        return $this->hasMany(Task::class);
-    }
-
-    /**
      * The sharedTasks that belong to the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
