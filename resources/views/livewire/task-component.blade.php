@@ -1,6 +1,14 @@
 <div wire:poll="getTask"
     class='flex min-h-screen items-center justify-center from-purple-200 via-purple-300 to-purple-500 bg-gradient-to-br'>
     <div class="flex items-center justify-center min-h-[450px]">
+        <button class="bg-red-800 text-white px-4 py-2 rounded-md hover:bg-red-700 my-6"
+                    wire:click="removeAllTasks" wire:confirm="Estas seguro que quieres borrar todas las tareas?">
+                    Borrar todas las tareas
+                </button>
+                <button class="bg-yellow-800 text-white px-4 py-2 rounded-md hover:bg-yellow-700 my-6"
+                    wire:click="recoverAllTasks" wire:confirm="Estas seguro que quieres recuperar todas las tareas?">
+                    Recuperar todas las tareas
+                </button>
         <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
             <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
                 <button class="bg-purple-800 text-white px-4 py-2 rounded-md hover:bg-purple-700 mt-6"
